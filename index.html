@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Работа курьером Яндекс Еда | До 3400₽ в день</title>
+    
+    <!-- Шрифты -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <!-- Иконки -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* --- CSS VARIABLES & RESET --- */
+        :root {
+            --brand-yellow: #FFCC00;
+            --brand-yellow-hover: #e6b800;
+            --dark-bg: #0f1014;
+            --card-bg: #161616;
+            --text-main: #ffffff;
+            --text-muted: #a0a0a0;
+            --gradient-overlay: linear-gradient(180deg, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.9) 100%);
+            --transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            --container: 1280px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 100px; /* Добавляем отступ, равный высоте шапки + немного воздуха */
+}
+
+        body {
+            font-family: 'Manrope', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--text-main);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        a { text-decoration: none; color: inherit; transition: var(--transition); }
+        ul { list-style: none; }
+        img { width: 100%; display: block; object-fit: cover; }
+
+        /* --- UTILITIES --- */
+        .container {
+            max-width: var(--container);
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px 36px;
+            border-radius: 50px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+            font-size: 16px;
+            white-space: nowrap;
+        }
+
+        .btn-primary {
+            background-color: var(--brand-yellow);
+            color: #000;
+            box-shadow: 0 4px 20px rgba(255, 204, 0, 0.3);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--brand-yellow-hover);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(255, 204, 0, 0.5);
+        }
+
+        .pulse-anim {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(255, 204, 0, 0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(255, 204, 0, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 204, 0, 0); }
+        }
+
+        .section-title {
+            font-size: 42px;
+            font-weight: 800;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 18px;
+            margin-bottom: 60px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .text-gradient {
+            background: linear-gradient(90deg, #FFCC00, #FF9900);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* --- HEADER --- */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            padding: 15px 0;
+            transition: var(--transition);
+            background: rgba(15, 16, 20, 0.8);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .header.scrolled {
+            padding: 10px 0;
+            background: rgba(15, 16, 20, 0.95);
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 800;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo span { color: var(--brand-yellow); }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+        }
+
+        .nav-link {
+            font-weight: 600;
+            font-size: 15px;
+            color: var(--text-muted);
+            transition: var(--transition);
+        }
+
+        .nav-link:hover { color: #fff; }
+
+        .mobile-toggle {
+            display: none;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        /* --- HERO SECTION --- */
+        .hero {
+            height: 100vh;
+            min-height: 700px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+            padding-top: 80px;
+        }
+
+        .hero-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://images.unsplash.com/photo-1556910103-1c02745a30bf?q=80&w=1925&auto=format&fit=crop') no-repeat center center/cover;
+            z-index: -2;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--gradient-overlay);
+            z-index: -1;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 700px;
+        }
+
+        .hero-tag {
+            background: rgba(255, 204, 0, 0.15);
+            color: var(--brand-yellow);
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 14px;
+            margin-bottom: 24px;
+            display: inline-block;
+            border: 1px solid rgba(255, 204, 0, 0.2);
+        }
+
+        .hero h1 {
+            font-size: 56px;
+            line-height: 1.1;
+            margin-bottom: 24px;
+            font-weight: 800;
+        }
+
+        .hero p {
+            font-size: 20px;
+            color: #ddd;
+            margin-bottom: 40px;
+            max-width: 550px;
+        }
+
+        /* --- TRANSPORT SECTION --- */
+        .transport-section {
+            padding: 60px 0;
+            background: var(--card-bg);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .transport-icons {
+            display: flex;
+            justify-content: center;
+            gap: 50px;
+            flex-wrap: wrap;
+        }
+
+        .transport-item {
+            text-align: center;
+            color: var(--text-muted);
+            transition: var(--transition);
+        }
+
+        .transport-item:hover {
+            color: var(--brand-yellow);
+            transform: translateY(-5px);
+        }
+
+        .transport-item i {
+            font-size: 32px;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .transport-item span {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        /* --- INCOME / CONDITIONS SECTION --- */
+        .income-section {
+            padding: 100px 0;
+            background: var(--dark-bg);
+        }
+
+        .calc-wrapper {
+            background: var(--card-bg);
+            border-radius: 24px;
+            padding: 40px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 40px;
+            border: 1px solid rgba(255,255,255,0.05);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+        }
+
+        .calc-info {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .calc-visual {
+            flex: 1;
+            min-width: 300px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-start;
+            background: rgba(255,255,255,0.03);
+            border-radius: 16px;
+            padding: 30px;
+        }
+
+        .income-highlight {
+            font-size: 48px;
+            font-weight: 800;
+            color: var(--brand-yellow);
+            margin-bottom: 10px;
+        }
+
+        .income-period {
+            color: #fff;
+            font-size: 20px;
+            margin-bottom: 20px;
+        }
+
+        .conditions-list li {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            font-size: 16px;
+            color: #ccc;
+        }
+
+        .conditions-list i {
+            color: var(--brand-yellow);
+            margin-top: 4px;
+        }
+
+        /* --- GALLERY SECTION --- */
+        .gallery-section {
+            padding: 100px 0;
+            overflow: hidden;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-template-rows: repeat(2, 250px);
+            gap: 20px;
+        }
+
+        .gallery-item {
+            border-radius: 16px;
+            overflow: hidden;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            transition: transform 0.6s ease;
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.1);
+        }
+
+        .gallery-item:nth-child(1) { grid-column: span 2; grid-row: span 2; }
+        .gallery-item:nth-child(2) { grid-column: span 1; }
+        .gallery-item:nth-child(3) { grid-column: span 1; }
+        .gallery-item:nth-child(4) { grid-column: span 2; }
+
+        .overlay-text {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 20px;
+            background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+            color: #fff;
+            font-weight: 600;
+        }
+
+        /* --- REQUIREMENTS SECTION --- */
+        .req-section {
+            padding: 80px 0;
+            background: #121214;
+            border-top: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .req-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .req-card {
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.05);
+            display: flex;
+            gap: 20px;
+        }
+
+        .req-icon {
+            font-size: 28px;
+            color: var(--brand-yellow);
+            flex-shrink: 0;
+        }
+
+        /* --- FAQ SECTION --- */
+        .faq-section {
+            padding: 100px 0;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .faq-item {
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 10px;
+        }
+
+        .faq-question {
+            width: 100%;
+            text-align: left;
+            background: none;
+            border: none;
+            padding: 24px 0;
+            color: #fff;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .faq-question i {
+            transition: transform 0.3s ease;
+            color: var(--brand-yellow);
+        }
+
+        .faq-question.active i {
+            transform: rotate(180deg);
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            color: var(--text-muted);
+        }
+
+        .faq-answer p {
+            padding-bottom: 24px;
+        }
+
+        /* --- FOOTER --- */
+        footer {
+            padding: 60px 0 30px;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            text-align: center;
+        }
+
+        .footer-logo {
+            font-size: 28px;
+            font-weight: 800;
+            margin-bottom: 20px;
+            display: inline-block;
+        }
+
+        .footer-logo span { color: var(--brand-yellow); }
+
+        .copyright {
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        /* --- ANIMATIONS --- */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease;
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* --- MOBILE STYLES --- */
+        @media (max-width: 768px) {
+            .section-title { font-size: 32px; }
+            .hero h1 { font-size: 40px; }
+            .hero-bg { background-position: 70% center; }
+            
+            .nav-links {
+                position: fixed;
+                top: 70px;
+                left: 0;
+                width: 100%;
+                background: #111;
+                flex-direction: column;
+                padding: 20px;
+                transform: translateY(-150%);
+                transition: transform 0.3s ease;
+                text-align: center;
+            }
+
+            .nav-links.active { transform: translateY(0); }
+            .mobile-toggle { display: block; }
+            
+            .gallery-grid {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto;
+            }
+            .gallery-item:nth-child(1) { grid-column: auto; grid-row: auto; height: 300px; }
+            .gallery-item { height: 250px; }
+            
+            .calc-wrapper { padding: 20px; }
+            .income-highlight { font-size: 36px; }
+            
+            .mobile-cta {
+                position: fixed;
+                bottom: 20px;
+                left: 20px;
+                right: 20px;
+                z-index: 999;
+                display: block;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            }
+            footer { padding-bottom: 100px; }
+        }
+        
+        @media (min-width: 769px) {
+            .mobile-cta { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header class="header" id="header">
+        <div class="container nav-container">
+            <a href="#" class="logo"><i class="fas fa-hamburger"></i> Яндекс <span>Еда</span></a>
+            <nav>
+                <ul class="nav-links" id="navLinks">
+                    <li><a href="#conditions" class="nav-link">Условия</a></li>
+                    <li><a href="#requirements" class="nav-link">Требования</a></li>
+                    <li><a href="#faq" class="nav-link">Вопросы</a></li>
+                </ul>
+            </nav>
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <a href="#" class="btn btn-primary pulse-anim" onclick="followReferral()">Стать курьером</a>
+                <div class="mobile-toggle" id="mobileToggle">
+                    <i class="fas fa-bars"></i>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-bg"></div>
+            <div class="hero-overlay"></div>
+            <div class="container">
+                <div class="hero-content reveal">
+                    <div class="hero-tag">Партнер сервиса Яндекс Еда</div>
+                    <h1>Присоединяйся к команде <span class="text-gradient">курьеров</span></h1>
+                    <p>
+                        Хочешь сам выбирать время и локации для доставок? <br>
+                        Есть возможность зарабатывать <strong>до 3400 рублей в день</strong>!
+                    </p>
+                    <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+                        <a href="#" class="btn btn-primary" onclick="followReferral()">Оставить заявку</a>
+                        <a href="#transport" class="btn" style="background: rgba(255,255,255,0.1); backdrop-filter: blur(5px); color: #fff;">Способы доставки</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Transport Section -->
+        <section id="transport" class="transport-section">
+            <div class="container">
+                <div class="transport-icons">
+                    <div class="transport-item">
+                        <i class="fas fa-walking"></i>
+                        <span>Пешком</span>
+                    </div>
+                    <div class="transport-item">
+                        <i class="fas fa-bicycle"></i>
+                        <span>Велосипед</span>
+                    </div>
+                    <div class="transport-item">
+                        <i class="fas fa-motorcycle"></i>
+                        <span>Скутер</span>
+                    </div>
+                    <div class="transport-item">
+                        <i class="fas fa-car"></i>
+                        <span>Авто</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Income & Conditions Section -->
+        <section id="conditions" class="income-section">
+            <div class="container">
+                <h2 class="section-title reveal">Что предлагаем?</h2>
+                <p class="section-subtitle reveal">Мы в поиске команды курьеров для компании, сотрудничающей с сервисом Яндекс.Еда.</p>
+                
+                <div class="calc-wrapper reveal">
+                    <div class="calc-info">
+                        <ul class="conditions-list">
+                            <li>
+                                <i class="fas fa-check-circle"></i>
+                                <div>
+                                    <strong>Гибкое расписание</strong><br>
+                                    Ты сам выбираешь время из доступных слотов. Возможность совмещать с учебой или другой работой.
+                                </div>
+                            </li>
+                            <li>
+                                <i class="fas fa-check-circle"></i>
+                                <div>
+                                    <strong>Удобные локации</strong><br>
+                                    Работай в районе, где тебе комфортно. Радиус доставки ограничен для твоего удобства.
+                                </div>
+                            </li>
+                            <li>
+                                <i class="fas fa-check-circle"></i>
+                                <div>
+                                    <strong>Яркую желтую одежду</strong><br>
+                                    Экипировкой обеспечим. Будь заметен на дороге!
+                                </div>
+                            </li>
+                            <li>
+                                <i class="fas fa-check-circle"></i>
+                                <div>
+                                    <strong>Прозрачные выплаты</strong><br>
+                                    Первая выплата поступает через две недели, далее для самозанятых — ежедневные.
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="calc-visual">
+                        <div style="color: #fff; font-size: 16px; margin-bottom: 5px;">Твой потенциальный доход:</div>
+                        <div class="income-highlight">до 3400 ₽</div>
+                        <div class="income-period">в день</div>
+                        <div style="margin-top: 20px;">
+                            <a href="#" class="btn btn-primary" style="width: 100%;" onclick="followReferral()">Начать зарабатывать</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        
+
+        <!-- Requirements Section -->
+        <section id="requirements" class="req-section">
+            <div class="container">
+                <h2 class="section-title reveal">Требования к курьерам</h2>
+                <div class="req-cards reveal">
+                    <div class="req-card">
+                        <i class="fab fa-android req-icon"></i>
+                        <div>
+                            <h4>Гаджет</h4>
+                            <p style="font-size: 14px; color: #888;">Смартфон на базе Android 7.0+ или iOS 12.1+.</p>
+                        </div>
+                    </div>
+                    <div class="req-card">
+                        <i class="fas fa-user-check req-icon"></i>
+                        <div>
+                            <h4>Личные качества</h4>
+                            <p style="font-size: 14px; color: #888;">Ответственность, пунктуальность и желание учиться новому.</p>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </section>
+
+        <!-- FAQ Section (Restored from Design 1) -->
+        <section id="faq" class="faq-section">
+            <div class="container">
+                <h2 class="section-title reveal">Частые вопросы</h2>
+                
+                <div class="faq-item reveal">
+                    <button class="faq-question">
+                        Сколько я смогу зарабатывать?
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Твой доход зависит от количества выполненных заказов и времени работы. В среднем курьеры зарабатывают до 3400 рублей в день, выбирая гибкий график.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item reveal">
+                    <button class="faq-question">
+                        Нужно ли иметь свой велосипед или авто?
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Нет! Вы можете доставлять пешком, на велосипеде, самокате, авто или даже на общественном транспорте. Выбирайте удобный для вас способ.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item reveal">
+                    <button class="faq-question">
+                        Как быстро начнутся выплаты?
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Первая выплата поступает через две недели после начала работы. Далее для самозанятых доступны ежедневные выплаты.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item reveal">
+                    <button class="faq-question">
+                        Нужно ли покупать одежду?
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Мы обеспечим тебя яркой желтой одеждой (жилетом и элементами формы) и термопакетом для заказов. Это бесплатно.</p>
+                    </div>
+                </div>
+
+                <div style="text-align: center; margin-top: 40px;">
+                    <a href="#" class="btn btn-primary pulse-anim" onclick="followReferral()">Стать курьером</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <a href="#" class="footer-logo">Яндекс <span>Еда</span></a>
+            <p class="copyright">© 2026 Партнер сервиса Яндекс Еда. Не является официальным сайтом компании.</p>
+        </div>
+    </footer>
+
+    <!-- Mobile Sticky Button -->
+    <div class="mobile-cta">
+        <a href="#" class="btn btn-primary" style="width: 100%;" onclick="followReferral()">Стать курьером</a>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        // --- КОНФИГУРАЦИЯ ---
+        // Вставь сюда свою реферальную ссылку
+        const REFERRAL_LINK = "https://reg.eda.yandex.ru/?advertisement_campaign=forms_for_agents&user_invite_code=603e730fd6c342e1a285cfce8a16010f&utm_content=blank"; 
+        
+        function followReferral() {
+            window.open(REFERRAL_LINK, '_blank');
+        }
+
+        // --- Sticky Header Effect ---
+        window.addEventListener('scroll', () => {
+            const header = document.getElementById('header');
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+
+        // --- Mobile Menu Toggle ---
+        const mobileToggle = document.getElementById('mobileToggle');
+        const navLinks = document.getElementById('navLinks');
+
+        mobileToggle.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+            const icon = mobileToggle.querySelector('i');
+            if (navLinks.classList.contains('active')) {
+                icon.classList.remove('fa-bars');
+                icon.classList.add('fa-times');
+            } else {
+                icon.classList.remove('fa-times');
+                icon.classList.add('fa-bars');
+            }
+        });
+
+        // Закрываем меню при клике на ссылку
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', () => {
+                navLinks.classList.remove('active');
+                mobileToggle.querySelector('i').classList.remove('fa-times');
+                mobileToggle.querySelector('i').classList.add('fa-bars');
+            });
+        });
+
+        // --- FAQ Accordion ---
+        const faqQuestions = document.querySelectorAll('.faq-question');
+        faqQuestions.forEach(question => {
+            question.addEventListener('click', () => {
+                const answer = question.nextElementSibling;
+                const isActive = question.classList.contains('active');
+
+                // Close all others
+                document.querySelectorAll('.faq-question').forEach(q => {
+                    q.classList.remove('active');
+                    q.nextElementSibling.style.maxHeight = null;
+                });
+
+                // Toggle current
+                if (!isActive) {
+                    question.classList.add('active');
+                    answer.style.maxHeight = answer.scrollHeight + "px";
+                }
+            });
+        });
+
+        // --- Scroll Reveal Animation ---
+        function reveal() {
+            var reveals = document.querySelectorAll(".reveal");
+            for (var i = 0; i < reveals.length; i++) {
+                var windowHeight = window.innerHeight;
+                var elementTop = reveals[i].getBoundingClientRect().top;
+                var elementVisible = 100;
+
+                if (elementTop < windowHeight - elementVisible) {
+                    reveals[i].classList.add("active");
+                }
+            }
+        }
+        window.addEventListener("scroll", reveal);
+        // Trigger once on load
+        reveal();
+    </script>
+</body>
+</html>
